@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "Binancify",
+  "version": "1.0",
+
+  "description": "test",
+  "icons": {
+    "30": "icons/Plant.png"
+  },
+
+  "browser_action": {
+    "default_icon": "icons/Plant.png",
+    "default_title": "Binancify"
+  },
+
+  "content_scripts": [
+        {
+          "matches": ["*://*.binance.com/*"],
+          "js": ["binancify.js"]
+        }
+      ]  
+  }
+  
