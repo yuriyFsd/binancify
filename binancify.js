@@ -49,30 +49,20 @@ function tableToArray(tableId) {
         result.push(rowData); } return result; 
     } 
 
-    // Example usage: 
-// Assume your table has an ID of "myTable" 
-let tableArray = tableToArray("myTable"); console.log
+//-----
 
-//class="AdvTableList"
-//let tbl = document.getElementsByClassName("AdvTableList); 
-//container relative bg-backgroundBasic
-
-function extractColumnValues(className = "bn-web-table-container", columnIndex = 2) {
-    
+function extractColumnValues(className = "bn-web-table-container") {    
     console.log('extractColumnValues')
-    let myrows = document.getElementsByClassName("bn-web-table-row bn-web-table-row-level-0") 
-    console.log(myrows[0].cells[1].innerText)
-    return
-    //document.body.style.border = "5px solid green";
-    const divElems = document.getElementsByClassName(className)
-    console.log( {res: divElems[0]} )
-    var columnValues = []; 
-     for (var i = 0; i < divElem.length; i++) { 
-        var divElem = divElems[i];
-        console.log(typeof divElem);
-        // for (var i = 1, row; row = table.rows[i]; i++) {
-        //     var cellValue = row.cells[columnIndex].innerText; columnValues.push(cellValue); 
-        // } 
-     }
-    return columnValues; 
+    let orderRows = Array.from(document.getElementsByClassName("bn-web-table-row bn-web-table-row-level-0"))
+    const numOfLimitsColumn = 2
+    const orders = {}
+    orderRows.forEach(orderRow => {
+        const orderLimitsTxt = orderRow.cells[numOfLimitsColumn].innerText.replace('\n-', '').split('\n');
+        const orderLimits = orderLimitsTxt.map((value) => {
+           return parseInt(value.replace(/\₴|\,/gi, ''))
+        })
+        orders[orderLimits[0]] = [orderLimits[1], orderLimits[2]]
+    });
+    
+    console.log({orders})
 }
