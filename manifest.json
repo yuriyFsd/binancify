@@ -3,7 +3,7 @@
   "name": "Binancify",
   "version": "1.0",
 
-  "description": "test",
+  "description": "p2p orders monitoring and alerting with sbeep sound",
   "icons": {
     "30": "icons/Plant.png"
   },
