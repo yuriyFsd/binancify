@@ -1,12 +1,18 @@
+// TODO: add UI form for: run. stop, set rate and amount, type of checking
+// TODO: make monitoring by overmarker rate and normal amount
+// TODO: highlight goodorders
+
 alert("Run orders monitor")
 run()
+const highLightBackGroundColor = 'cadetblue'
 
-function run() {
-    console.log("start")    
-    const amount = 10000 //UAH amount
+function run() {  
+    console.log("start") 
+    const rateLimit = 4.05//42.97
+    const amount = 1000//20000 //UAH amount
     checkTimeInterval = 5000 //miliSeconds
     setInterval(() => {
-        checkIfThereAreGoodOrders(0, amount, "over-rate");
+        checkIfThereAreGoodOrders(rateLimit, amount, "over-rate");
     }, checkTimeInterval);     
 }
 
@@ -35,6 +41,7 @@ function checkIfThereAreGoodOrders(rateLimit, amount, checkOption = "over-rate" 
     const lessAmountOrders = filterLessAmountOrders(ordersOnPage, amount)
     if (checkOption == "over-rate") {
         const goodOrders = checkIfRightAmountHasEqualOrOverRate(rateLimit, lessAmountOrders)
+        highlightGoodOrdersRows(goodOrders)
         console.log({goodOrders})
         if (goodOrders.length) beep()
     }
@@ -42,27 +49,37 @@ function checkIfThereAreGoodOrders(rateLimit, amount, checkOption = "over-rate" 
 }
 
 function getTopRateAsLimit(orders) {
-    return parseFloat(Object.keys(orders[0])[0])
+    const max = orders.reduce((accumulator, currentVal) => {
+        return Math.max(accumulator, parseFloat(Object.keys(currentVal)[0]))
+    }, parseFloat(Object.keys(orders[0])[0]))
+    return max
 }
 
 function checkIfRightAmountHasEqualOrOverRate(rateLimit, lessAmountOrders) {
-    return lessAmountOrders.filter((order) => parseFloat(Object.keys(order)[0]) >= rateLimit * 0.999)
+    console.log({'0999limit': rateLimit * 0.999})
+    const filteredByRate =  lessAmountOrders.filter((order) => parseFloat(Object.keys(order)[0]) >= rateLimit * 0.999)
+    console.log({filteredByRate})
+    return filteredByRate
 }
 
 
-function getPageOrders() {    
-    console.log('extractColumnValues');
+function getPageOrders(ordersToHighLight) {    
+    console.log({ordersToHighLight})
     let orderRows = Array.from(document.getElementsByClassName("bn-web-table-row bn-web-table-row-level-0"));
     const numOfPriceColumn = 1;
     const numOfLimitsColumn = 2;
-    const orders = []
-    orderRows.forEach(orderRow => {
+    const orders = [];
+    orderRows.forEach((orderRow) => {
         const price = parseFloat(orderRow.cells[numOfPriceColumn].innerText);
         const orderLimitsTxt = orderRow.cells[numOfLimitsColumn].innerText.replace('\n-', '').split('\n');
         const orderLimits = orderLimitsTxt.map((value) => {
-           return parseInt(value.replace(/\₴|\,/gi, ''));
+           return parseInt(value.replace(/\₴|zł|\,/gi, ''));
         })
         orders.push({[price]: [orderLimits[1], orderLimits[2]]});
+        if(ordersToHighLight !== undefined && ordersToHighLight.length) {
+           const myfound = ordersToHighLight.find((goodOrder) => Object.entries(goodOrder).join() === `${price},${orderLimits[1]},${orderLimits[2]}`)
+           if(myfound !== undefined) orderRow.style.background = highLightBackGroundColor
+        }
     });
     return orders;
 }
@@ -82,4 +99,9 @@ function filterLessAmountOrders(orders, amountToBuy) {
 }
 
 function getOrderOverMarket(orders) {
+}
+
+function highlightGoodOrdersRows(orders) { //background
+    console.log('highlightGoodOrdersRows!!!!')
+    getPageOrders(orders)
 }
