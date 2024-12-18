@@ -12,10 +12,15 @@
     "default_icon": "icons/Plant.png",
     "default_title": "Binancify"
   },
+  "permissions": ["notifications"],
+
+  "background": {
+    "scripts": ["background-script.js"]
+  },
 
   "content_scripts": [
         {
-          "matches": ["*://*.binance.com/*"],
+          "matches": ["*://*.p2p.binance.com/*"],
           "js": ["binancify.js"]
         }
       ]  

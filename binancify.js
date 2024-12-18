@@ -1,12 +1,11 @@
 // TODO: add UI form for: run. stop, set rate and amount, type of checking
 // TODO: make monitoring by overmarker rate and normal amount
-// TODO: highlight goodorders
 
-alert("Run orders monitor")
 run()
 const highLightBackGroundColor = 'cadetblue'
 
-function run() {  
+function run() {
+    notifyUserAboutStart()
     console.log("start") 
     const rateLimit = 4.05//42.97
     const amount = 1000//20000 //UAH amount
@@ -32,6 +31,10 @@ function beep() {
     }else alert('Ваш браузер не підтримує Web Audio');
 }
 
+function notifyUserAboutStart() {
+    console.log("content script sending message");
+    browser.runtime.sendMessage({"content": 'Run good orders monitoring...'});    
+}
 //-----
 
 function checkIfThereAreGoodOrders(rateLimit, amount, checkOption = "over-rate" ) {
